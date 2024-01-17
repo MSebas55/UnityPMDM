@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PlatformMovement : MonoBehaviour
 {
-    public KeyCode rightkey, leftkey;
+    public KeyCode rightkey, leftkey, upkey;
     public float speed;
-
+    public float fuerza = 10;
     private Rigidbody2D _rb;
     private Vector2 _dir;
     private SpriteRenderer _spriteRenderer;
@@ -22,7 +22,6 @@ public class PlatformMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         _dir = Vector2.zero;
         if (Input.GetKey(leftkey)) 
         {
@@ -34,6 +33,11 @@ public class PlatformMovement : MonoBehaviour
             _dir = new Vector2(1, 0);
             _spriteRenderer.flipX = false ;
         }
+        if (Input.GetKeyDown(upkey))
+        {
+            _rb.velocity = new Vector2(_rb.velocity.x, 0);
+            _rb.AddForce(Vector2.up * fuerza * _rb.gravityScale, ForceMode2D.Impulse);
+        }
         //animations
         if (_dir != Vector2.zero)
         {
@@ -42,10 +46,13 @@ public class PlatformMovement : MonoBehaviour
         {
             _animator.SetBool("isWalking", false);
         }
+
     }
     private void FixedUpdate()
     {
-        _rb.velocity = _dir * speed;
+        Vector2 nVel = _dir * speed;
+        nVel.y = _rb.velocity.y;
+        _rb.velocity = nVel;
     }
 
 }
